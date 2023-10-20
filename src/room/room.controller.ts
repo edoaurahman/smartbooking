@@ -24,6 +24,11 @@ export class RoomController {
     private schedulerRegistry: SchedulerRegistry,
   ) {}
 
+  @Get('/')
+  findAll() {
+    return this.roomService.findAll();
+  }
+
   @Get('/:id')
   async findOne(@Param('id') id: number) {
     return await this.roomService.findOne(id);
@@ -33,11 +38,6 @@ export class RoomController {
   @ApiBody({ type: CreateRoomDto })
   async createRoom(@Body() roomDto: CreateRoomDto) {
     return await this.roomService.createRoom(roomDto);
-  }
-
-  @Get('/all')
-  async findAll() {
-    return await this.roomService.findAll();
   }
 
   @Patch('/update/:id')
