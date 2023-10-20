@@ -47,7 +47,7 @@ export class RoomController {
   }
 
   @HttpCode(200)
-  @Post('/booking/:id')
+  @Get('/seeroom/:id')
   async seeRoom(@Param('id') id: number) {
     const room = await this.roomService.seeRoom(id);
     this.roomGateway.refreshRoom();
@@ -58,7 +58,7 @@ export class RoomController {
     };
   }
 
-  @Post('/cancel/:id')
+  @Get('/cancel/:id')
   cancelProcess(@Param('id') id: number) {
     this.deleteCron(`cancelProcess.${id}`);
     return this.cronCancelProcess(id);
