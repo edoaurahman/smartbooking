@@ -13,6 +13,16 @@ export class RoomService {
     private readonly roomRepository: Repository<Room>,
   ) {}
 
+  // get clientID by username
+  getClientId(username: string) {
+    return [...this.users.entries()].find(([, user]) => user === username)[0];
+  }
+
+  leave(id: string) {
+    this.users.delete(id);
+    console.log(this.users);
+  }
+
   async findOne(id: number) {
     return await this.roomRepository.findOneBy({ id });
   }

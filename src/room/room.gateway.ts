@@ -25,4 +25,10 @@ export class RoomGateway {
     const rooms = await this.roomService.findAll();
     this.server.emit('refreshRoom', rooms);
   }
+
+  @SubscribeMessage('Disconnect')
+  disconnect(@ConnectedSocket() client: Socket) {
+    this.roomService.leave(client.id);
+    this.refreshRoom();
+  }
 }
