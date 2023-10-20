@@ -44,8 +44,8 @@ export class RoomService {
     console.log(this.users);
   }
 
-  findAll() {
-    return this.roomRepository.find();
+  async findAll() {
+    return await this.roomRepository.find();
   }
 
   createRoom(roomDto: CreateRoomDto) {
