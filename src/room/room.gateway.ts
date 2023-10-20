@@ -26,9 +26,8 @@ export class RoomGateway {
     this.server.emit('refreshRoom', rooms);
   }
 
-  @SubscribeMessage('Disconnect')
+  @SubscribeMessage('disconnecting')
   disconnect(@ConnectedSocket() client: Socket) {
     this.roomService.leave(client.id);
-    this.refreshRoom();
   }
 }

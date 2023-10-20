@@ -51,7 +51,7 @@ export class RoomController {
   async seeRoom(@Param('id') id: number) {
     const room = await this.roomService.seeRoom(id);
     this.roomGateway.refreshRoom();
-    this.addCronJob(`cancelProcess.${id}`, '1');
+    this.addCronJob(`cancelProcess.${id}`, '5');
     return {
       message: 'success',
       data: room,
