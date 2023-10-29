@@ -22,6 +22,11 @@ export class MahasiswaController {
     return this.mahasiswaService.auth(authMahasiswaDto);
   }
 
+  @Get('/jadwal')
+  getJadwal(){
+    return this.mahasiswaService.getJadwal();
+  }
+
   @ApiBearerAuth()
   @Post()
   @ApiBody({ type: CreateMahasiswaDto })

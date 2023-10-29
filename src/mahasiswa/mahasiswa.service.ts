@@ -13,6 +13,11 @@ export class MahasiswaService {
     private mahasiswaRepository: Repository<Mahasiswa>,
   ) {}
 
+  async getJadwal(){
+    const jadwal = await this.mahasiswaRepository.query('SELECT * FROM mahasiswa')
+    console.log(jadwal);
+  }
+
   async auth(authMahasiswaDto: AuthMahasiswaDto) {
     const mahasiswa = await this.mahasiswaRepository.findOne({
       where: {
