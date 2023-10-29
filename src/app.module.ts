@@ -52,10 +52,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(MahasiswaMiddleware)
-      .exclude(
-        { path: '/mahasiswa/auth', method: RequestMethod.ALL },
-        { path: '/mahasiswa/jadwal', method: RequestMethod.ALL },
-      )
-      .forRoutes(MahasiswaController);
+      .forRoutes({ path: 'mahasiswa', method: RequestMethod.GET });
   }
 }

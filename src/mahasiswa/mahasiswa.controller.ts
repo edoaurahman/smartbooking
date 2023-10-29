@@ -22,9 +22,9 @@ export class MahasiswaController {
     return this.mahasiswaService.auth(authMahasiswaDto);
   }
 
-  @Get('/jadwal')
-  getJadwal(){
-    return this.mahasiswaService.getJadwal();
+  @Get('/jadwal/:id_lantai')
+  getJadwal(@Param('id_lantai') id_lantai: string) {
+    return this.mahasiswaService.getBookingStatus(id_lantai);
   }
 
   @ApiBearerAuth()
