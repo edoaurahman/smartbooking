@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { KelasService } from './kelas.service';
 import { CreateKelaDto } from './dto/create-kela.dto';
 import { UpdateKelaDto } from './dto/update-kela.dto';
@@ -17,18 +25,21 @@ export class KelasController {
     return this.kelasService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.kelasService.findOne(+id);
+  @Get(':idKelas')
+  findOne(@Param('idKelas') idKelas: string) {
+    return this.kelasService.findOne(idKelas);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateKelaDto: UpdateKelaDto) {
-    return this.kelasService.update(+id, updateKelaDto);
+  @Patch(':idKelas')
+  update(
+    @Param('idKelas') idKelas: string,
+    @Body() updateKelaDto: UpdateKelaDto,
+  ) {
+    return this.kelasService.update(idKelas, updateKelaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.kelasService.remove(+id);
+  @Delete(':idKelas')
+  remove(@Param('idKelas') idKelas: string) {
+    return this.kelasService.remove(idKelas);
   }
 }

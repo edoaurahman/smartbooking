@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,6 +23,8 @@ import { ProdiModule } from './prodi/prodi.module';
 import { RuangModule } from './ruang/ruang.module';
 import { TingkatanModule } from './tingkatan/tingkatan.module';
 import { AdminModule } from './admin/admin.module';
+import { MahasiswaMiddleware } from './mahasiswa/mahasiswa.middleware';
+import { MahasiswaController } from './mahasiswa/mahasiswa.controller';
 
 @Module({
   imports: [
@@ -41,4 +48,11 @@ import { AdminModule } from './admin/admin.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(MahasiswaMiddleware)
+      .exclude({ path: '/mahasiswa/auth', method: RequestMethod.ALL })
+      .forRoutes(MahasiswaController);
+  }
+}

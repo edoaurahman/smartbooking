@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateJadwalDto } from './dto/create-jadwal.dto';
 import { UpdateJadwalDto } from './dto/update-jadwal.dto';
+import { In, Repository } from 'typeorm';
+import { Jadwal } from './entities/jadwal.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class JadwalService {
-  create(createJadwalDto: CreateJadwalDto) {
+  constructor(
+    @InjectRepository(Jadwal)
+    private readonly jadwalRepository: Repository<Jadwal>,
+  ) {}
+  async create(createJadwalDto: CreateJadwalDto) {
     return 'This action adds a new jadwal';
   }
 
-  findAll() {
-    return `This action returns all jadwal`;
+  async findAll() {
+    return await this.jadwalRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} jadwal`;
   }
 
-  update(id: number, updateJadwalDto: UpdateJadwalDto) {
+  async update(id: number, updateJadwalDto: UpdateJadwalDto) {
     return `This action updates a #${id} jadwal`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} jadwal`;
   }
 }

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { TingkatanService } from './tingkatan.service';
 import { CreateTingkatanDto } from './dto/create-tingkatan.dto';
 import { UpdateTingkatanDto } from './dto/update-tingkatan.dto';
@@ -17,18 +25,21 @@ export class TingkatanController {
     return this.tingkatanService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tingkatanService.findOne(+id);
+  @Get(':idTingkatan')
+  findOne(@Param('idTingkatan') idTingkatan: string) {
+    return this.tingkatanService.findOne(idTingkatan);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTingkatanDto: UpdateTingkatanDto) {
-    return this.tingkatanService.update(+id, updateTingkatanDto);
+  @Patch(':idTingkatan')
+  update(
+    @Param('idTingkatan') idTingkatan: string,
+    @Body() updateTingkatanDto: UpdateTingkatanDto,
+  ) {
+    return this.tingkatanService.update(idTingkatan, updateTingkatanDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tingkatanService.remove(+id);
+  @Delete(':idTingkatan')
+  remove(@Param('idTingkatan') idTingkatan: string) {
+    return this.tingkatanService.remove(idTingkatan);
   }
 }

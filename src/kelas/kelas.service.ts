@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateKelaDto } from './dto/create-kela.dto';
 import { UpdateKelaDto } from './dto/update-kela.dto';
+import { Kelas } from './entities/kela.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class KelasService {
-  create(createKelaDto: CreateKelaDto) {
-    return 'This action adds a new kela';
+  constructor(
+    @InjectRepository(Kelas)
+    private kelasRepository: Repository<Kelas>,
+  ) {}
+
+  async create(createKelaDto: CreateKelaDto) {
+    return await this.kelasRepository.save(createKelaDto);
   }
 
-  findAll() {
-    return `This action returns all kelas`;
+  async findAll() {
+    return await this.kelasRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} kela`;
+  async findOne(idKelas: string) {
+    return await this.kelasRepository.findOne({ where: { idKelas: idKelas } });
   }
 
-  update(id: number, updateKelaDto: UpdateKelaDto) {
-    return `This action updates a #${id} kela`;
+  async update(idKelas: string, updateKelaDto: UpdateKelaDto) {
+    const kelas = await this.kelasRepository.findOne({
+      where: { idKelas: idKelas },
+    });
+    return this.kelasRepository.update(kelas, updateKelaDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} kela`;
+  async remove(idKelas: string) {
+    return await this.kelasRepository.delete({ idKelas: idKelas });
   }
 }

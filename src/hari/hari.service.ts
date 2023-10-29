@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { CreateHariDto } from './dto/create-hari.dto';
 import { UpdateHariDto } from './dto/update-hari.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Hari } from './entities/hari.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class HariService {
-  create(createHariDto: CreateHariDto) {
-    return 'This action adds a new hari';
+  constructor(
+    @InjectRepository(Hari)
+    private readonly hariRepository: Repository<Hari>,
+  ) {}
+  async create(createHariDto: CreateHariDto) {
+    return await this.hariRepository.save(createHariDto);
   }
 
-  findAll() {
-    return `This action returns all hari`;
+  async findAll() {
+    return await this.hariRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} hari`;
+  async findOne(idHari: string) {
+    return await this.hariRepository.findOne({ where: { idHari: idHari } });
   }
 
-  update(id: number, updateHariDto: UpdateHariDto) {
-    return `This action updates a #${id} hari`;
+  async update(idHari: string, updateHariDto: UpdateHariDto) {
+    const hari = await this.hariRepository.findOne({
+      where: { idHari: idHari },
+    });
+    return await this.hariRepository.update(hari, updateHariDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} hari`;
+  async remove(idHari: string) {
+    return await this.hariRepository.delete(idHari);
   }
 }

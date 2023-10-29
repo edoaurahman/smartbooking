@@ -1,11 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { DosenService } from './dosen.service';
 import { CreateDosenDto } from './dto/create-dosen.dto';
 import { UpdateDosenDto } from './dto/update-dosen.dto';
+import { AuthDosenDto } from './dto/auth-dosen.dto';
 
 @Controller('dosen')
 export class DosenController {
   constructor(private readonly dosenService: DosenService) {}
+
+  @Post('/auth')
+  auth(@Body() authDosenDto: AuthDosenDto) {
+    return this.dosenService.auth(authDosenDto);
+  }
 
   @Post()
   create(@Body() createDosenDto: CreateDosenDto) {
@@ -19,16 +33,16 @@ export class DosenController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.dosenService.findOne(+id);
+    return this.dosenService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDosenDto: UpdateDosenDto) {
-    return this.dosenService.update(+id, updateDosenDto);
+    return this.dosenService.update(id, updateDosenDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.dosenService.remove(+id);
+    return this.dosenService.remove(id);
   }
 }

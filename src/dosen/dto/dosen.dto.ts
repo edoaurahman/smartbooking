@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateDosenDto {
+export class DosenDto {
   @ApiProperty({ default: '12345678' })
   nip: string;
   @ApiProperty({ default: 'Abid' })
   nama: string;
-  @ApiProperty({ default: '12345678' })
-  password: string;
   @ApiProperty({ default: 'L' })
   jenisKelamin: string;
   @ApiProperty({ default: 'Malang' })

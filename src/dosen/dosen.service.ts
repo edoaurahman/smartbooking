@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDosenDto } from './dto/create-dosen.dto';
 import { UpdateDosenDto } from './dto/update-dosen.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Dosen } from './entities/dosen.entity';
+import { Repository } from 'typeorm';
+import { AuthDosenDto } from './dto/auth-dosen.dto';
 
 @Injectable()
 export class DosenService {
-  create(createDosenDto: CreateDosenDto) {
-    return 'This action adds a new dosen';
+  constructor(
+    @InjectRepository(Dosen)
+    private readonly dosenRepository: Repository<Dosen>,
+  ) {}
+
+  async auth(authDosenDto: AuthDosenDto) {
+    const mahasiswa = await this.dosenRepository.findOne({
+      where: {
+        nip: authDosenDto.nip,
+        password: authDosenDto.password,
+      },
+    });
+
+    if (!mahasiswa) {
+      throw new NotFoundException('Nip atau password salah');
+    }
+
+    return mahasiswa;
   }
 
-  findAll() {
-    return `This action returns all dosen`;
+  async create(createDosenDto: CreateDosenDto) {
+    return await this.dosenRepository.save(createDosenDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dosen`;
+  async findAll() {
+    return await this.dosenRepository.find();
   }
 
-  update(id: number, updateDosenDto: UpdateDosenDto) {
-    return `This action updates a #${id} dosen`;
+  async findOne(nip: string) {
+    return await this.dosenRepository.findOne({ where: { nip: nip } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dosen`;
+  async update(nip: string, updateDosenDto: UpdateDosenDto) {
+    const dosen = await this.dosenRepository.findOne({ where: { nip: nip } });
+    return await this.dosenRepository.update(dosen, updateDosenDto);
+  }
+
+  async remove(nip: string) {
+    return await this.dosenRepository.delete(nip);
   }
 }
