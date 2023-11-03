@@ -13,13 +13,6 @@ export class MahasiswaService {
     private mahasiswaRepository: Repository<Mahasiswa>,
   ) {}
 
-  async getBookingStatus(id_lantai: string) {
-    const jadwal = await this.mahasiswaRepository.query(
-      `SELECT * FROM getbookingstatus WHERE id_lantai = '${id_lantai}'`,
-    );
-    return jadwal;
-  }
-
   async auth(authMahasiswaDto: AuthMahasiswaDto) {
     const mahasiswa = await this.mahasiswaRepository.findOne({
       where: {
