@@ -6,28 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  Inject,
+  HttpCode,
 } from '@nestjs/common';
 import { RuangService } from './ruang.service';
 import { CreateRuangDto } from './dto/create-ruang.dto';
 import { UpdateRuangDto } from './dto/update-ruang.dto';
+import { MyGateway } from 'src/websocket/room.gateway';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { WebSocketService } from 'src/websocket/room.service';
+import { CronJob } from 'cron';
 
 @Controller('ruang')
 export class RuangController {
-  ruangData: any;
-  constructor(private readonly ruangService: RuangService) {
-    this.ruangData = {};
-  }
-
-  tambahDataRuang(namaRuang: string, dataRuang) {
-    // cek apakah nama ruang sudah ada di objek
-    if (!this.ruangData.hasOwnProperty(namaRuang)) {
-      // jika belum, buat array baru untuk menyimpan data ruang
-      this.ruangData[namaRuang] = [];
-    }
-
-    // tambahkan data ruang ke dalam array
-    this.ruangData[namaRuang].push(dataRuang);
-  }
+  constructor(
+    private readonly ruangService: RuangService,
+    private readonly websockerService: WebSocketService,
+    @Inject(MyGateway) private readonly roomGateway: MyGateway,
+    private schedulerRegistry: SchedulerRegistry,
+  ) {}
 
   @Get('/getbookingstatus/:id_lantai/:tanggal')
   async getBookingStatus(
@@ -39,12 +36,7 @@ export class RuangController {
       weekday: 'long',
     });
 
-    this.ruangData = {};
-    const ruang = await this.ruangService.getBookingStatus(id_lantai, hari);
-    ruang.forEach((ruang: { nama_ruang: string }) => {
-      this.tambahDataRuang(ruang.nama_ruang, ruang);
-    });
-    return this.ruangData;
+    return this.ruangService.getBookingStatus(id_lantai, hari);
   }
 
   @Post()
@@ -70,5 +62,50 @@ export class RuangController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ruangService.remove(id);
+  }
+
+  @HttpCode(200)
+  @Get('/seeroom/:nama_ruang')
+  async seeRoom(@Param('nama_ruang') nama_ruang: string) {
+    const room = await this.websockerService.seeRoom(nama_ruang);
+    this.roomGateway.refreshRoom();
+    this.addCronJob(`cancelProcess.${nama_ruang}`, '5');
+    return {
+      message: 'success',
+      data: room,
+    };
+  }
+
+  @Get('/cancel/:nama_ruang')
+  cancelProcess(@Param('nama_ruang') nama_ruang: string) {
+    this.deleteCron(`cancelProcess.${nama_ruang}`);
+    return this.cronCancelProcess(nama_ruang);
+  }
+
+  addCronJob(name: string, minute: string) {
+    const job = new CronJob(`* ${minute} * * * *`, () => {
+      console.log(`time (${minute}) for job ${name} to run!`);
+      this.cronCancelProcess(name.split('.')[1]);
+      this.deleteCron(name);
+    });
+
+    this.schedulerRegistry.addCronJob(name, job);
+    job.start();
+
+    console.log(`job ${name} added for each minute at ${minute} seconds!`);
+  }
+
+  async cronCancelProcess(nama_ruang: string) {
+    const room = await this.websockerService.cancelProcess(nama_ruang);
+    this.roomGateway.refreshRoom();
+    return {
+      message: 'success',
+      data: room,
+    };
+  }
+
+  deleteCron(name: string) {
+    this.schedulerRegistry.deleteCronJob(name);
+    console.log(`job ${name} deleted!`);
   }
 }

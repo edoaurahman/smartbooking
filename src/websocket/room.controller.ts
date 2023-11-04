@@ -8,19 +8,20 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { RoomService } from './room.service';
+import { WebSocketService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { ApiBody } from '@nestjs/swagger';
-import { UpdateRoomDto } from './dto/update-room.dto';
-import { RoomGateway } from './room.gateway';
+import { MyGateway } from './room.gateway';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
+import { CreateRuangDto } from 'src/ruang/dto/create-ruang.dto';
+import { UpdateRuangDto } from 'src/ruang/dto/update-ruang.dto';
 
 @Controller('room')
 export class RoomController {
   constructor(
-    private readonly roomService: RoomService,
-    @Inject(RoomGateway) private readonly roomGateway: RoomGateway,
+    private readonly roomService: WebSocketService,
+    @Inject(MyGateway) private readonly roomGateway: MyGateway,
     private schedulerRegistry: SchedulerRegistry,
   ) {}
 
@@ -30,25 +31,25 @@ export class RoomController {
   }
 
   @Get('/:id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id') id: string) {
     return await this.roomService.findOne(id);
   }
 
   @Post('/create')
-  @ApiBody({ type: CreateRoomDto })
-  async createRoom(@Body() roomDto: CreateRoomDto) {
+  @ApiBody({ type: CreateRuangDto })
+  async createRoom(@Body() roomDto: CreateRuangDto) {
     return await this.roomService.createRoom(roomDto);
   }
 
   @Patch('/update/:id')
   @ApiBody({ type: CreateRoomDto })
-  async updateRoom(@Body() roomDto: UpdateRoomDto, @Param('id') id: number) {
+  async updateRoom(@Body() roomDto: UpdateRuangDto, @Param('id') id: string) {
     return await this.roomService.updateRoom(id, roomDto);
   }
 
   @HttpCode(200)
   @Get('/seeroom/:id')
-  async seeRoom(@Param('id') id: number) {
+  async seeRoom(@Param('id') id: string) {
     const room = await this.roomService.seeRoom(id);
     this.roomGateway.refreshRoom();
     this.addCronJob(`cancelProcess.${id}`, '5');
@@ -59,12 +60,12 @@ export class RoomController {
   }
 
   @Get('/cancel/:id')
-  cancelProcess(@Param('id') id: number) {
+  cancelProcess(@Param('id') id: string) {
     this.deleteCron(`cancelProcess.${id}`);
     return this.cronCancelProcess(id);
   }
 
-  async cronCancelProcess(id: number) {
+  async cronCancelProcess(id: string) {
     const room = await this.roomService.cancelProcess(id);
     this.roomGateway.refreshRoom();
     return {
@@ -76,7 +77,7 @@ export class RoomController {
   addCronJob(name: string, minute: string) {
     const job = new CronJob(`* ${minute} * * * *`, () => {
       console.log(`time (${minute}) for job ${name} to run!`);
-      this.cronCancelProcess(+name.split('.')[1]);
+      this.cronCancelProcess(name.split('.')[1]);
       this.deleteCron(name);
     });
 

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { JadwalService } from './jadwal.service';
 import { CreateJadwalDto } from './dto/create-jadwal.dto';
 import { UpdateJadwalDto } from './dto/update-jadwal.dto';
@@ -19,7 +27,12 @@ export class JadwalController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.jadwalService.findOne(+id);
+    return this.jadwalService.findOne(id);
+  }
+
+  @Get('/kelas/:id_kelas')
+  getJadwalKelas(@Param('id_kelas') idKelas: string) {
+    return this.jadwalService.getJadwalKelas(idKelas);
   }
 
   @Patch(':id')

@@ -47,6 +47,9 @@ export class Jadwal {
   @Column('varchar', { name: 'jam_selesai', length: 5 })
   jamSelesai: string;
 
+  @Column('varchar', { name: 'status', length: 10 })
+  status: string;
+
   @ManyToOne(() => Dosen, (dosen) => dosen.jadwals, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',

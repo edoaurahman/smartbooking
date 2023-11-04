@@ -7,11 +7,17 @@ export class Ruang {
   @Column('varchar', { primary: true, name: 'id_ruang', length: 5 })
   idRuang: string;
 
+  @Column('varchar', { name: 'id_lantai', length: 5 })
+  idLantai: string;
+
   @Column('varchar', { name: 'nama_ruang', length: 15 })
   namaRuang: string;
 
   @Column('varchar', { name: 'deskripsi_ruang', length: 50 })
   deskripsiRuang: string;
+
+  @Column('varchar', { name: 'status_ruang' })
+  statusRuang: string;
 
   @Column('int', { name: 'qr_code' })
   qrCode: number;
