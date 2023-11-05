@@ -2,6 +2,7 @@
 export interface JamStatus {
   nama_ruang: string;
   id_lantai: string;
+  id_ruang: string;
   date: string | null;
   nama_hari: string;
   jam_mulai: string;

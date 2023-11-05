@@ -12,6 +12,18 @@ export class JadwalService {
     @InjectRepository(Jadwal)
     private readonly jadwalRepository: Repository<Jadwal>,
   ) {}
+
+  async getBookingMahasiswa(idKelas: string) {
+    const booking = await this.jadwalRepository.query(
+      `SELECT * FROM view_gettiketbooking WHERE id_kelas = '${idKelas}'`,
+    );
+    console.log(booking);
+    if (booking.length == 0) {
+      throw new NotFoundException('Booking tidak ditemukan');
+    }
+    return booking;
+  }
+
   async create(createJadwalDto: CreateJadwalDto) {
     return 'This action adds a new jadwal';
   }
@@ -42,7 +54,8 @@ export class JadwalService {
         jam_mulai: element.jam_mulai,
         jam_selesai: element.jam_selesai,
         qrcode: element.qr_code,
-        id_kelas: element.id_kelas,
+        nama_ruang: element.nama_ruang,
+        status_jadwal: element.status_jadwal,
       });
     });
 

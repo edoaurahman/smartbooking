@@ -35,6 +35,11 @@ export class JadwalController {
     return this.jadwalService.getJadwalKelas(idKelas);
   }
 
+  @Get('/booking/mahasiswa/:id_kelas')
+  getBookingMahasiswa(@Param('id_kelas') idKelas: string) {
+    return this.jadwalService.getBookingMahasiswa(idKelas);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateJadwalDto: UpdateJadwalDto) {
     return this.jadwalService.update(+id, updateJadwalDto);

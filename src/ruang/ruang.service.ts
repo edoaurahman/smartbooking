@@ -57,6 +57,7 @@ export class RuangService {
       const jamData: JamStatus = {
         nama_ruang: ruang.nama_ruang,
         id_lantai: ruang.id_lantai,
+        id_ruang: ruang.id_ruang,
         date: ruang.date,
         nama_hari: ruang.nama_hari,
         jam_mulai: ruang.jam_mulai,

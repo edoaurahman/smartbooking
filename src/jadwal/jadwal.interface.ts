@@ -6,4 +6,6 @@ export interface JadwalKelas {
   jam_selesai: string;
   qr_code: string | null;
   id_kelas: string;
+  nama_ruang: string;
+  status_jadwal: string;
 }
